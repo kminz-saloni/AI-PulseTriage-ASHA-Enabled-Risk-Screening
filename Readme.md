@@ -11,15 +11,15 @@ It only helps ASHA workers take better decisions and connect patients to the hea
 **🎯 Problem Statement**
 
 ASHA workers face:
--Multiple fragmented government apps
--Low and delayed incentive payments
--Heavy workload with little decision support
--Safety risks during field visits
--Poor internet connectivity
--Limited access to doctors in rural areas
+- Multiple fragmented government apps
+- Low and delayed incentive payments
+- Heavy workload with little decision support
+- Safety risks during field visits
+- Poor internet connectivity
+- Limited access to doctors in rural areas
 
 This leads to:
--Missed high-risk pregnancies
--Poor TB & chronic disease follow-up
--Burnout among ASHA workers
--Preventable maternal & child mortality
+- Missed high-risk pregnancies
+- Poor TB & chronic disease follow-up
+- Burnout among ASHA workers
+- Preventable maternal & child mortality
