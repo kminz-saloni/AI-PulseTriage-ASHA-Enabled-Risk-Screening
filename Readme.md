@@ -1,21 +1,25 @@
-Project Synopsis
-Title  -    AI PulseTriage: ASHA-Enabled Risk Screening
+#**🩺ASHA-Saathi**
 
-Theme : Healthcare
+**📌 Overview**
 
-Problem Statement
+ASHA-Saathi is a digital platform designed to support ASHA workers in rural India.
+ASHA workers are responsible for maternal health, child care, disease monitoring, and awareness, but they face problems like heavy workload, low pay transparency, safety issues, and poor digital tools.
+This project aims to make their work easier, safer, and more effective using mobile technology and Google Cloud.
+The system does not replace doctors.
+It only helps ASHA workers take better decisions and connect patients to the healthcare system faster.
 
-65% of India’s population—around 850 million people—lives in rural areas, where 1 million ASHA workers are the backbone of primary healthcare. These workers each manage 1000+ people using memory and paper registers, with no reliable way to track blood pressure, diabetes risk, or TB treatment over time. As a result, hypertension and diabetes are often diagnosed only at the stage of stroke or organ failure, and TB relapse risk is missed because adherence and post-treatment monitoring are not systematically tracked. Connectivity gaps and fragmented data mean that PHC doctors cannot see structured, longitudinal patient information, leading to avoidable hospitalizations, higher mortality, and overloaded district hospitals.
+**🎯 Problem Statement**
 
-Proposed Solution
+ASHA workers face:
+-Multiple fragmented government apps
+-Low and delayed incentive payments
+-Heavy workload with little decision support
+-Safety risks during field visits
+-Poor internet connectivity
+-Limited access to doctors in rural areas
 
- The project proposes an offline-first Android app for ASHA workers, connected to a Google Cloud–based rural health intelligence layer. The app allows voice- and checklist-based data capture in Hindi/local languages, works fully offline in low-network villages, and syncs securely to the cloud whenever connectivity is available. A lightweight on-device risk engine classifies patients into Red / Yellow / Green risk categories for chronic conditions (hypertension, diabetes, TB relapse risk) and suggests referral urgency.
-On the cloud side, patient records from multiple ASHAs and PHCs are unified into a longitudinal “micro–health record” for each rural resident. Google Cloud services are used to:
-consolidate and normalize ASHA-collected data,run AI/ML models that detect high-risk patterns and missed follow‑ups, and provide PHC and block-level dashboards that highlight the most vulnerable patients and villages.
-
-The platform is designed to integrate gradually with government health systems (ABHA/NDHM) and NTEP/NCD programmes, while strictly keeping within decision-support boundaries (no automated diagnosis).
-
-
-
-
-
+This leads to:
+-Missed high-risk pregnancies
+-Poor TB & chronic disease follow-up
+-Burnout among ASHA workers
+-Preventable maternal & child mortality
