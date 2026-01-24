@@ -23,3 +23,13 @@ This leads to:
 - Poor TB & chronic disease follow-up
 - Burnout among ASHA workers
 - Preventable maternal & child mortality
+
+# **💡 Solution**
+
+ASHA-Saathi provides:
+- A single unified app for all ASHA activities
+- Offline-first data collection
+- AI-based risk alerts (decision support)
+- Telemedicine connectivity
+- Safety SOS system
+- Transparent incentive tracking
