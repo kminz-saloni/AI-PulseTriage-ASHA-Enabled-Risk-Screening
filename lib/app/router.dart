@@ -11,7 +11,7 @@ import '../features/visits/new_visit_wizard.dart';
 import '../features/emergency/emergency_create_screen.dart';
 import '../features/emergency/emergency_list_screen.dart';
 import '../features/settings/settings_screen.dart';
-import '../features/auth/login_screen.dart';
+import '../features/auth/login_screen.dart' show LoginScreen, authStateProvider;
 
 final routerProvider = Provider<GoRouter>((ref) {
   final isAuthenticated = ref.watch(authStateProvider);
