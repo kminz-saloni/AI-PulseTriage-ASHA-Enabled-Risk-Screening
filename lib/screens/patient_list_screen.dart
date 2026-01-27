@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/floating_action_buttons.dart';
 
 // Patient Model
 class PatientInfo {
@@ -37,10 +38,6 @@ class _PatientListScreenState extends State<PatientListScreen> {
   bool _isEnglish = true;
   String _searchQuery = '';
   String _selectedFilter = 'All';
-  
-  // Draggable button positions
-  Offset _voiceButtonOffset = const Offset(20, -120);
-  Offset _sosButtonOffset = const Offset(20, -120);
   
   final List<PatientInfo> _allPatients = [
     PatientInfo(
@@ -392,62 +389,10 @@ class _PatientListScreenState extends State<PatientListScreen> {
             ),
           ),
 
-          // Draggable Voice Assistant Button (Bottom-Right)
-          Positioned(
-            right: _voiceButtonOffset.dx,
-            bottom: _voiceButtonOffset.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _voiceButtonOffset = Offset(
-                    (_voiceButtonOffset.dx - details.delta.dx).clamp(20.0, size.width - 80),
-                    (_voiceButtonOffset.dy - details.delta.dy).clamp(-size.height + 180, -20.0),
-                  );
-                });
-              },
-              child: FloatingActionButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(_isEnglish ? 'Voice Assistant' : 'आवाज़ सहायक'),
-                      backgroundColor: AppTheme.primaryTeal,
-                    ),
-                  );
-                },
-                backgroundColor: AppTheme.primaryTeal,
-                child: const Icon(Icons.mic, color: Colors.white, size: 28),
-                heroTag: 'voice_patient',
-              ),
-            ),
-          ),
-
-          // Draggable SOS Button (Bottom-Left)
-          Positioned(
-            left: _sosButtonOffset.dx,
-            bottom: _sosButtonOffset.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _sosButtonOffset = Offset(
-                    (_sosButtonOffset.dx + details.delta.dx).clamp(20.0, size.width - 80),
-                    (_sosButtonOffset.dy - details.delta.dy).clamp(-size.height + 180, -20.0),
-                  );
-                });
-              },
-              child: FloatingActionButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(_isEnglish ? 'SOS Emergency' : 'एसओएस आपातकाल'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                },
-                backgroundColor: Colors.red,
-                child: const Icon(Icons.warning, color: Colors.white, size: 28),
-                heroTag: 'sos_patient',
-              ),
-            ),
+          // Floating Action Buttons (SOS & Voice)
+          FloatingActionButtonsWidget(
+            key: const ValueKey('patient_list_buttons'),
+            isEnglish: _isEnglish,
           ),
         ],
       ),

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import 'package:intl/intl.dart';
 import '../theme/app_theme.dart';
+import '../widgets/common_app_bar.dart';
+import '../widgets/floating_action_buttons.dart';
 import 'patient_management_screen.dart';
 import 'emergency_alert_screen.dart';
 import 'incentive_tracker_screen.dart';
@@ -16,79 +18,10 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   bool _isEnglish = true;
-  Timer? _sosTimer;
-  bool _sosActive = false;
-  
-  // Draggable button positions
-  Offset _sosPosition = const Offset(20, -180);
-  Offset _voicePosition = const Offset(20, -100);
 
   @override
   void dispose() {
-    _sosTimer?.cancel();
     super.dispose();
-  }
-
-  void _showSOSDialog() {
-    _sosTimer = Timer(const Duration(seconds: 5), () {
-      if (mounted) {
-        _activateSOS();
-      }
-    });
-
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: Text(
-          _isEnglish ? 'Emergency Alert' : 'आपातकाल सतर्कता',
-          style: const TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
-        ),
-        content: Text(
-          _isEnglish
-              ? 'Are you in emergency?\nSOS will activate if you don\'t respond in 5 seconds.'
-              : 'क्या आप आपातकाल में हैं?\nयदि आप 5 सेकंड में प्रतिक्रिया नहीं देते हैं तो SOS सक्रिय हो जाएगा।',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              _sosTimer?.cancel();
-              Navigator.pop(context);
-              _sosActive = false;
-            },
-            child: Text(_isEnglish ? 'No' : 'नहीं'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _sosTimer?.cancel();
-              Navigator.pop(context);
-              _activateSOS();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: Text(_isEnglish ? 'Yes, Emergency!' : 'हाँ, आपातकाल!'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _activateSOS() {
-    if (_sosActive) return;
-    _sosActive = true;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text(
-          _isEnglish
-              ? '🚨 SOS Activated!\n📍 Location shared with emergency contact\n📞 Calling emergency contact...'
-              : '🚨 SOS सक्रिय!\n📍 स्थान आपातकाल संपर्क को भेजा गया\n📞 आपातकाल संपर्क को कॉल कर रहे हैं...',
-        ),
-        backgroundColor: Colors.red,
-        duration: const Duration(seconds: 4),
-      ),
-    );
   }
 
   Widget _buildCurrentScreen() {
@@ -110,62 +43,15 @@ class _MainScreenState extends State<MainScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    
     return Scaffold(
       body: Stack(
         children: [
           _buildCurrentScreen(),
           
-          // Draggable Voice Assistant Button
-          Positioned(
-            right: _voicePosition.dx,
-            bottom: _voicePosition.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _voicePosition = Offset(
-                    (_voicePosition.dx - details.delta.dx).clamp(20.0, size.width - 80),
-                    (_voicePosition.dy - details.delta.dy).clamp(-size.height + 180, -20.0),
-                  );
-                });
-              },
-              child: FloatingActionButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(_isEnglish ? 'Voice Assistant' : 'आवाज़ सहायक'),
-                      backgroundColor: AppTheme.primaryTeal,
-                    ),
-                  );
-                },
-                backgroundColor: AppTheme.primaryTeal,
-                child: const Icon(Icons.mic, color: Colors.white, size: 28),
-                heroTag: 'voice_main',
-              ),
-            ),
-          ),
-
-          // Draggable SOS Button
-          Positioned(
-            right: _sosPosition.dx,
-            bottom: _sosPosition.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _sosPosition = Offset(
-                    (_sosPosition.dx - details.delta.dx).clamp(20.0, size.width - 80),
-                    (_sosPosition.dy - details.delta.dy).clamp(-size.height + 180, -20.0),
-                  );
-                });
-              },
-              child: FloatingActionButton(
-                onPressed: _showSOSDialog,
-                backgroundColor: Colors.red,
-                child: const Text('SOS', style: TextStyle(color: Colors.white, fontWeight: FontWeight.bold, fontSize: 16)),
-                heroTag: 'sos_main',
-              ),
-            ),
+          // Floating Action Buttons (SOS & Voice)
+          FloatingActionButtonsWidget(
+            key: const ValueKey('main_screen_buttons'),
+            isEnglish: _isEnglish,
           ),
         ],
       ),
@@ -210,24 +96,25 @@ class _MainScreenState extends State<MainScreen> {
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
         leading: IconButton(
-          icon: const Icon(Icons.person, color: Colors.white, size: 24),
+          icon: const CircleAvatar(
+            backgroundColor: Colors.white,
+            child: Icon(Icons.person, color: AppTheme.primaryTeal, size: 24),
+          ),
           onPressed: () {
-            ScaffoldMessenger.of(context).showSnackBar(
-              SnackBar(
-                content: Text(_isEnglish ? 'Profile' : 'प्रोफ़ाइल'),
-                duration: const Duration(seconds: 1),
-              ),
+            // Show compact profile dialog
+            showDialog(
+              context: context,
+              builder: (context) => _buildCompactProfileDialog(),
             );
           },
-          padding: EdgeInsets.zero,
         ),
-        title: Text(_isEnglish ? "AASHA-TRIAGE" : 'AASHA-TRIAGE'),
+        title: Text(_isEnglish ? 'AASHA-TRIAGE' : 'आशा-ट्रायज'),
         elevation: 0,
         centerTitle: true,
         backgroundColor: AppTheme.primaryTeal,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 8.0),
+            padding: const EdgeInsets.only(right: 12.0),
             child: GestureDetector(
               onTap: () => setState(() => _isEnglish = !_isEnglish),
               child: Container(
@@ -240,6 +127,7 @@ class _MainScreenState extends State<MainScreen> {
                 ),
                 padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: Row(
+                  mainAxisSize: MainAxisSize.min,
                   children: [
                     Icon(
                       _isEnglish ? Icons.language : Icons.translate,
@@ -258,21 +146,6 @@ class _MainScreenState extends State<MainScreen> {
                   ],
                 ),
               ),
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(right: 12.0),
-            child: IconButton(
-              icon: const Icon(Icons.person, color: Colors.white),
-              onPressed: () {
-                ScaffoldMessenger.of(context).showSnackBar(
-                  SnackBar(
-                    content: Text(_isEnglish ? 'Profile' : 'प्रोफ़ाइल'),
-                    duration: const Duration(seconds: 1),
-                  ),
-                );
-              },
-              padding: EdgeInsets.zero,
             ),
           ),
         ],
@@ -602,6 +475,72 @@ class _MainScreenState extends State<MainScreen> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildCompactProfileDialog() {
+    return Dialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(16)),
+      child: Container(
+        width: 320,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            // Profile Icon
+            CircleAvatar(
+              radius: 35,
+              backgroundColor: AppTheme.primaryTeal.withOpacity(0.2),
+              child: const Icon(Icons.person, size: 40, color: AppTheme.primaryTeal),
+            ),
+            const SizedBox(height: 16),
+            // Name
+            Text(
+              'Priya Sharma',
+              style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+            ),
+            const SizedBox(height: 4),
+            Text(
+              _isEnglish ? 'ASHA Worker' : 'आशा कार्यकर्ता',
+              style: TextStyle(fontSize: 14, color: Colors.grey[600]),
+            ),
+            const SizedBox(height: 20),
+            // Details
+            _buildInfoRow(Icons.badge, 'ID: ASH001'),
+            const SizedBox(height: 10),
+            _buildInfoRow(Icons.phone, '+91 98765 43210'),
+            const SizedBox(height: 20),
+            // Sign Out Button
+            SizedBox(
+              width: double.infinity,
+              child: ElevatedButton.icon(
+                onPressed: () {
+                  Navigator.of(context).pop();
+                  Navigator.of(context).pushNamedAndRemoveUntil('/login', (route) => false);
+                },
+                icon: const Icon(Icons.logout, size: 18),
+                label: Text(_isEnglish ? 'Sign Out' : 'साइन आउट'),
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                  padding: const EdgeInsets.symmetric(vertical: 12),
+                  shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                ),
+              ),
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  Widget _buildInfoRow(IconData icon, String text) {
+    return Row(
+      children: [
+        Icon(icon, color: AppTheme.primaryTeal, size: 18),
+        const SizedBox(width: 10),
+        Text(text, style: const TextStyle(fontSize: 14)),
+      ],
     );
   }
 }

@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
+import '../widgets/common_app_bar.dart';
+import '../widgets/floating_action_buttons.dart';
 
 // Patient Model
 class PatientInfo {
@@ -37,10 +39,6 @@ class _PatientManagementScreenState extends State<PatientManagementScreen> {
   bool _isEnglish = true;
   String _searchQuery = '';
   String _selectedFilter = 'All';
-  
-  // Draggable button positions
-  Offset _voiceButtonOffset = const Offset(20, -120);
-  Offset _sosButtonOffset = const Offset(20, -120);
   
   final List<PatientInfo> _allPatients = [
     PatientInfo(
@@ -173,122 +171,17 @@ class _PatientManagementScreenState extends State<PatientManagementScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.of(context).size;
-    
     return Scaffold(
       backgroundColor: Colors.grey[50],
+      appBar: CommonAppBar(
+        title: _isEnglish ? 'Patient Management' : 'रोगी प्रबंधन',
+        isEnglish: _isEnglish,
+        onLanguageToggle: () => setState(() => _isEnglish = !_isEnglish),
+      ),
       body: Stack(
         children: [
-          // Main Content
           Column(
             children: [
-              // App Bar with Navigation and Language Toggle
-              Container(
-                decoration: BoxDecoration(
-                  gradient: LinearGradient(
-                    colors: [AppTheme.primaryTeal, AppTheme.accentTeal],
-                    begin: Alignment.topLeft,
-                    end: Alignment.bottomRight,
-                  ),
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.black.withOpacity(0.1),
-                      blurRadius: 8,
-                      offset: const Offset(0, 2),
-                    ),
-                  ],
-                ),
-                child: SafeArea(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
-                    child: Row(
-                      children: [
-                        // Home Button
-                        IconButton(
-                          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false),
-                          icon: const Icon(Icons.home, color: Colors.white, size: 24),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        const SizedBox(width: 16),
-                        // Title
-                        Expanded(
-                          child: Text(
-                            _isEnglish ? 'Patient Management' : 'रोगी प्रबंधन',
-                            style: const TextStyle(
-                              color: Colors.white,
-                              fontSize: 20,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                        ),
-                        // Profile Icon Button
-                        IconButton(
-                          onPressed: () {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text(_isEnglish ? 'Profile' : 'प्रोफ़ाइल'),
-                                duration: const Duration(seconds: 1),
-                              ),
-                            );
-                          },
-                          icon: const Icon(Icons.person, color: Colors.white, size: 24),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        const SizedBox(width: 8),
-                        // Language Toggle
-                        Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(20),
-                          ),
-                          child: Row(
-                            children: [
-                              GestureDetector(
-                                onTap: () => setState(() => _isEnglish = true),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: _isEnglish ? Colors.white : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    'EN',
-                                    style: TextStyle(
-                                      color: _isEnglish ? AppTheme.primaryTeal : Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                              GestureDetector(
-                                onTap: () => setState(() => _isEnglish = false),
-                                child: Container(
-                                  padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
-                                  decoration: BoxDecoration(
-                                    color: !_isEnglish ? Colors.white : Colors.transparent,
-                                    borderRadius: BorderRadius.circular(20),
-                                  ),
-                                  child: Text(
-                                    'हिन्दी',
-                                    style: TextStyle(
-                                      color: !_isEnglish ? AppTheme.primaryTeal : Colors.white,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 12,
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
 
               // Search Bar
               Padding(
@@ -380,6 +273,12 @@ class _PatientManagementScreenState extends State<PatientManagementScreen> {
             ],
           ),
 
+          // Floating Action Buttons (SOS & Voice)
+          FloatingActionButtonsWidget(
+            key: const ValueKey('patient_mgmt_buttons'),
+            isEnglish: _isEnglish,
+          ),
+          
           // Floating Add Button
           Positioned(
             bottom: 80,
@@ -389,64 +288,6 @@ class _PatientManagementScreenState extends State<PatientManagementScreen> {
               backgroundColor: AppTheme.primaryTeal,
               child: const Icon(Icons.add, color: Colors.white, size: 32),
               heroTag: 'add_patient_mgmt',
-            ),
-          ),
-
-          // Draggable Voice Assistant Button (Bottom-Right)
-          Positioned(
-            right: _voiceButtonOffset.dx,
-            bottom: _voiceButtonOffset.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _voiceButtonOffset = Offset(
-                    (_voiceButtonOffset.dx - details.delta.dx).clamp(20.0, size.width - 80),
-                    (_voiceButtonOffset.dy - details.delta.dy).clamp(-size.height + 180, -20.0),
-                  );
-                });
-              },
-              child: FloatingActionButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(_isEnglish ? 'Voice Assistant' : 'आवाज़ सहायक'),
-                      backgroundColor: AppTheme.primaryTeal,
-                    ),
-                  );
-                },
-                backgroundColor: AppTheme.primaryTeal,
-                child: const Icon(Icons.mic, color: Colors.white, size: 28),
-                heroTag: 'voice_patient_mgmt',
-              ),
-            ),
-          ),
-
-          // Draggable SOS Button (Bottom-Left)
-          Positioned(
-            left: _sosButtonOffset.dx,
-            bottom: _sosButtonOffset.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _sosButtonOffset = Offset(
-                    (_sosButtonOffset.dx + details.delta.dx).clamp(20.0, size.width - 80),
-                    (_sosButtonOffset.dy - details.delta.dy).clamp(-size.height + 180, -20.0),
-                  );
-                });
-              },
-              child: FloatingActionButton(
-                onPressed: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(_isEnglish ? 'SOS Emergency' : 'एसओएस आपातकाल'),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                },
-                backgroundColor: Colors.red,
-                child: const Icon(Icons.warning, color: Colors.white, size: 28),
-                heroTag: 'sos_patient_mgmt',
-              ),
             ),
           ),
         ],

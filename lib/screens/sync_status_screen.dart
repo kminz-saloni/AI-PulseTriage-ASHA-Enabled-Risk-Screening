@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import '../theme/app_theme.dart';
 import '../widgets/cards_buttons.dart';
+import '../widgets/floating_action_buttons.dart';
 
 class SyncStatusScreen extends StatefulWidget {
   const SyncStatusScreen({Key? key}) : super(key: key);
@@ -13,12 +13,6 @@ class SyncStatusScreen extends StatefulWidget {
 class _SyncStatusScreenState extends State<SyncStatusScreen> {
   bool _isSyncing = false;
   int _unsynced = 3;
-
-  // SOS & Voice variables
-  Timer? _sosTimer;
-  bool _sosActive = false;
-  Offset _sosPosition = const Offset(0, 0);
-  Offset _voicePosition = const Offset(0, 0);
 
   void _performSync() {
     setState(() => _isSyncing = true);
@@ -45,72 +39,7 @@ class _SyncStatusScreenState extends State<SyncStatusScreen> {
     super.dispose();
   }
 
-  void _showSOSDialog() {
-    _sosTimer = Timer(const Duration(seconds: 5), () {
-      if (mounted) {
-        _activateSOS();
-      }
-    });
 
-    showDialog(
-      context: context,
-      barrierDismissible: false,
-      builder: (context) => AlertDialog(
-        title: const Text(
-          'Emergency Alert',
-          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
-        ),
-        content: const Text(
-          'Are you in emergency?\nSOS will activate if you don\'t respond in 5 seconds.',
-        ),
-        actions: [
-          TextButton(
-            onPressed: () {
-              _sosTimer?.cancel();
-              Navigator.pop(context);
-              _sosActive = false;
-            },
-            child: const Text('No'),
-          ),
-          ElevatedButton(
-            onPressed: () {
-              _sosTimer?.cancel();
-              Navigator.pop(context);
-              _activateSOS();
-            },
-            style: ElevatedButton.styleFrom(
-              backgroundColor: Colors.red,
-            ),
-            child: const Text('Yes, Emergency!'),
-          ),
-        ],
-      ),
-    );
-  }
-
-  void _activateSOS() {
-    if (_sosActive) return;
-    _sosActive = true;
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text(
-          '🚨 SOS Activated!\n📍 Location shared with emergency contact\n📞 Calling emergency contact...',
-        ),
-        backgroundColor: Colors.red,
-        duration: Duration(seconds: 4),
-      ),
-    );
-  }
-
-  void _openVoiceAssistant() {
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('🎤 Voice Assistant Activated'),
-        duration: Duration(seconds: 2),
-      ),
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -346,81 +275,11 @@ class _SyncStatusScreenState extends State<SyncStatusScreen> {
               ),
             ),
           ),
-          // SOS Button
-          Positioned(
-            left: _sosPosition.dx,
-            bottom: _sosPosition.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _sosPosition = Offset(
-                    (_sosPosition.dx + details.delta.dx).clamp(0.0, MediaQuery.of(context).size.width - 60),
-                    (_sosPosition.dy - details.delta.dy).clamp(0.0, MediaQuery.of(context).size.height - 200),
-                  );
-                });
-              },
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: Colors.red,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.red.withOpacity(0.4),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: _showSOSDialog,
-                    customBorder: const CircleBorder(),
-                    child: const Icon(Icons.sos, color: Colors.white, size: 28),
-                  ),
-                ),
-              ),
-            ),
-          ),
-          // Voice Assistant Button
-          Positioned(
-            left: _voicePosition.dx,
-            bottom: _voicePosition.dy,
-            child: GestureDetector(
-              onPanUpdate: (details) {
-                setState(() {
-                  _voicePosition = Offset(
-                    (_voicePosition.dx + details.delta.dx).clamp(0.0, MediaQuery.of(context).size.width - 60),
-                    (_voicePosition.dy - details.delta.dy).clamp(0.0, MediaQuery.of(context).size.height - 200),
-                  );
-                });
-              },
-              child: Container(
-                width: 60,
-                height: 60,
-                decoration: BoxDecoration(
-                  color: AppTheme.accentTeal,
-                  shape: BoxShape.circle,
-                  boxShadow: [
-                    BoxShadow(
-                      color: AppTheme.accentTeal.withOpacity(0.4),
-                      blurRadius: 8,
-                      spreadRadius: 2,
-                    ),
-                  ],
-                ),
-                child: Material(
-                  color: Colors.transparent,
-                  child: InkWell(
-                    onTap: _openVoiceAssistant,
-                    customBorder: const CircleBorder(),
-                    child: const Icon(Icons.mic, color: Colors.white, size: 28),
-                  ),
-                ),
-              ),
-            ),
+          
+          // Floating Action Buttons (SOS & Voice)
+          FloatingActionButtonsWidget(
+            key: const ValueKey('sync_status_buttons'),
+            isEnglish: true,
           ),
         ],
       ),
