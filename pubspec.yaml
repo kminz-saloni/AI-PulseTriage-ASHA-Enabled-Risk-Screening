@@ -1,6 +1,7 @@
-name: asha_triage
-description: ASHA-enabled offline-first triage app
+name: ai_pulse_triage
+description: AI PulseTriage - Offline risk screening for rural health workers
 publish_to: 'none'
+
 version: 1.0.0+1
 
 environment:
@@ -9,17 +10,13 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
-  flutter_localizations:
-    sdk: flutter
-  intl: ^0.20.2
-  go_router: ^14.0.0
-  flutter_riverpod: ^2.5.1
+  cupertino_icons: ^1.0.2
+  intl: ^0.18.1
 
 dev_dependencies:
   flutter_test:
     sdk: flutter
-  flutter_lints: ^4.0.0
+  flutter_lints: ^2.0.0
 
 flutter:
   uses-material-design: true
-  generate: true

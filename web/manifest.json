@@ -1,6 +1,6 @@
 {
-    "name": "asha_triage",
-    "short_name": "asha_triage",
+    "name": "ai_pulse_triage",
+    "short_name": "ai_pulse_triage",
     "start_url": ".",
     "display": "standalone",
     "background_color": "#0175C2",
