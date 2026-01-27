@@ -31,8 +31,8 @@ class _FloatingActionButtonsWidgetState extends State<FloatingActionButtonsWidge
   @override
   void initState() {
     super.initState();
-    _sosPosition = widget.initialSosPosition ?? const Offset(16, 80);
-    _voicePosition = widget.initialVoicePosition ?? const Offset(16, 80);
+    _sosPosition = widget.initialSosPosition ?? const Offset(16, 20);
+    _voicePosition = widget.initialVoicePosition ?? const Offset(16, 20);
   }
 
   @override
@@ -42,8 +42,8 @@ class _FloatingActionButtonsWidgetState extends State<FloatingActionButtonsWidge
     if (oldWidget.initialSosPosition != widget.initialSosPosition ||
         oldWidget.initialVoicePosition != widget.initialVoicePosition) {
       setState(() {
-        _sosPosition = widget.initialSosPosition ?? const Offset(16, 80);
-        _voicePosition = widget.initialVoicePosition ?? const Offset(16, 80);
+        _sosPosition = widget.initialSosPosition ?? const Offset(16, 20);
+        _voicePosition = widget.initialVoicePosition ?? const Offset(16, 20);
       });
     }
   }

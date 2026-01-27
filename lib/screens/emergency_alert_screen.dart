@@ -290,6 +290,58 @@ class _EmergencyAlertScreenState extends State<EmergencyAlertScreen> {
           ),
         ],
       ),
+      bottomNavigationBar: BottomNavigationBar(
+        type: BottomNavigationBarType.fixed,
+        selectedItemColor: AppTheme.primaryTeal,
+        unselectedItemColor: Colors.grey,
+        selectedFontSize: 12,
+        unselectedFontSize: 12,
+        currentIndex: 2, // Highlighting the current tab
+        onTap: (index) {
+          if (index == 2) return; // Already on this screen
+          
+          // Navigate based on tab selection
+          switch (index) {
+            case 0:
+              Navigator.pop(context); // Go back to Home
+              break;
+            case 1:
+              Navigator.pushReplacementNamed(context, '/patient_management');
+              break;
+            case 2:
+              // Current screen
+              break;
+            case 3:
+              Navigator.pushReplacementNamed(context, '/tasks');
+              break;
+            case 4:
+              Navigator.pushReplacementNamed(context, '/incentives');
+              break;
+          }
+        },
+        items: [
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.home),
+            label: _isEnglish ? 'Home' : 'होम',
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.people),
+            label: _isEnglish ? 'Patients' : 'मरीज़',
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.local_hospital),
+            label: _isEnglish ? 'Referrals' : 'रेफरल',
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.task_alt),
+            label: _isEnglish ? 'Tasks' : 'कार्य',
+          ),
+          BottomNavigationBarItem(
+            icon: const Icon(Icons.account_balance_wallet),
+            label: _isEnglish ? 'Incentives' : 'प्रोत्साहन',
+          ),
+        ],
+      ),
     );
   }
 

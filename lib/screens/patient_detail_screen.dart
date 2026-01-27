@@ -38,6 +38,15 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
     }
   }
 
+  String _getCategoryFromAge(int age) {
+    if (age < 18) {
+      return 'Child';
+    } else if (age >= 60) {
+      return 'Elderly';
+    }
+    return 'Adult';
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -218,7 +227,13 @@ class _PatientDetailScreenState extends State<PatientDetailScreen> {
                           onPressed: () {
                             Navigator.of(context).push(
                               MaterialPageRoute(
-                                builder: (context) => const NewVisitScreen(),
+                                builder: (context) => NewVisitScreen(
+                                  patientId: widget.patient.id,
+                                  patientName: widget.patient.name,
+                                  patientAge: widget.patient.age.toString(),
+                                  patientCategory: _getCategoryFromAge(widget.patient.age),
+                                  patientRisk: getRiskLabel().split(' ')[0], // "HIGH", "MEDIUM", or "LOW"
+                                ),
                               ),
                             );
                           },

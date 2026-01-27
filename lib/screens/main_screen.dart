@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
-import 'dart:async';
 import 'package:intl/intl.dart';
 import '../theme/app_theme.dart';
-import '../widgets/common_app_bar.dart';
 import '../widgets/floating_action_buttons.dart';
 import 'patient_management_screen.dart';
 import 'emergency_alert_screen.dart';
+import 'referrals_screen.dart';
 import 'incentive_tracker_screen.dart';
+import 'new_patient_screen.dart';
+import 'tasks_screen.dart';
 
 class MainScreen extends StatefulWidget {
   const MainScreen({Key? key}) : super(key: key);
@@ -21,11 +22,11 @@ class _MainScreenState extends State<MainScreen> {
   
   // Store positions per tab (tab index -> Map of button positions)
   final Map<int, Map<String, Offset>> _tabButtonPositions = {
-    0: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Home
-    1: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Patients
-    2: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Referrals
-    3: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Tasks
-    4: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Incentives
+    0: {'sos': const Offset(16, 20), 'voice': const Offset(16, 20)}, // Home
+    1: {'sos': const Offset(16, 20), 'voice': const Offset(16, 20)}, // Patients
+    2: {'sos': const Offset(16, 20), 'voice': const Offset(16, 20)}, // Referrals
+    3: {'sos': const Offset(16, 20), 'voice': const Offset(16, 20)}, // Tasks
+    4: {'sos': const Offset(16, 20), 'voice': const Offset(16, 20)}, // Incentives
   };
 
   void _updateButtonPosition(String buttonType, Offset newPosition) {
@@ -46,9 +47,9 @@ class _MainScreenState extends State<MainScreen> {
       case 1:
         return const PatientManagementScreen();
       case 2:
-        return const EmergencyAlertScreen();
+        return const ReferralsScreen();
       case 3:
-        return _buildTasksTab();
+        return const TasksScreen();
       case 4:
         return const IncentiveTrackerScreen();
       default:
@@ -198,7 +199,12 @@ class _MainScreenState extends State<MainScreen> {
                     icon: Icons.warning,
                     title: _isEnglish ? 'Emergency\nAlert' : 'आपातकाल\nसतर्कता',
                     color: Colors.red,
-                    onTap: () => setState(() => _currentIndex = 2),
+                    onTap: () {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const EmergencyAlertScreen()),
+                      );
+                    },
                   )),
                 ],
               ),
@@ -206,10 +212,10 @@ class _MainScreenState extends State<MainScreen> {
               Row(
                 children: [
                   Expanded(child: _buildQuickActionCard(
-                    icon: Icons.list_alt,
-                    title: _isEnglish ? 'Emergencies' : 'आपात स्थितियां',
+                    icon: Icons.task_alt,
+                    title: _isEnglish ? 'Tasks' : 'कार्य',
                     color: Colors.orange,
-                    onTap: () => setState(() => _currentIndex = 2),
+                    onTap: () => setState(() => _currentIndex = 3),
                   )),
                   const SizedBox(width: 12),
                   Expanded(child: _buildQuickActionCard(
@@ -217,11 +223,9 @@ class _MainScreenState extends State<MainScreen> {
                     title: _isEnglish ? 'New Patient' : 'नया मरीज़',
                     color: Colors.teal,
                     onTap: () {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        SnackBar(
-                          content: Text(_isEnglish ? 'Add New Patient' : 'नया मरीज़ जोड़ें'),
-                          backgroundColor: Colors.teal,
-                        ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(builder: (context) => const NewPatientScreen()),
                       );
                     },
                   )),
@@ -465,31 +469,6 @@ class _MainScreenState extends State<MainScreen> {
                   ),
                 ],
               ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-
-  Widget _buildTasksTab() {
-    return Scaffold(
-      backgroundColor: Colors.grey[50],
-      appBar: AppBar(
-        title: Text(_isEnglish ? 'All Tasks' : 'सभी कार्य'),
-        elevation: 0,
-        centerTitle: true,
-        backgroundColor: AppTheme.primaryTeal,
-      ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Icon(Icons.task_alt, size: 64, color: Colors.grey[400]),
-            const SizedBox(height: 16),
-            Text(
-              _isEnglish ? 'All Tasks View' : 'सभी कार्य दृश्य',
-              style: TextStyle(fontSize: 18, color: Colors.grey[600]),
             ),
           ],
         ),
