@@ -82,11 +82,11 @@ class _MainScreenState extends State<MainScreen> {
       SnackBar(
         content: Text(
           _isEnglish
-              ? '🚨 SOS Activated! Location sent to emergency contact'
-              : '🚨 SOS सक्रिय! स्थान आपातकाल संपर्क को भेजा गया',
+              ? '🚨 SOS Activated!\n📍 Location shared with emergency contact\n📞 Calling emergency contact...'
+              : '🚨 SOS सक्रिय!\n📍 स्थान आपातकाल संपर्क को भेजा गया\n📞 आपातकाल संपर्क को कॉल कर रहे हैं...',
         ),
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 4),
       ),
     );
   }
@@ -209,13 +209,25 @@ class _MainScreenState extends State<MainScreen> {
     return Scaffold(
       backgroundColor: Colors.grey[50],
       appBar: AppBar(
-        title: Text(_isEnglish ? "Today's Tasks" : 'आज के कार्य'),
+        leading: IconButton(
+          icon: const Icon(Icons.person, color: Colors.white, size: 24),
+          onPressed: () {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(
+                content: Text(_isEnglish ? 'Profile' : 'प्रोफ़ाइल'),
+                duration: const Duration(seconds: 1),
+              ),
+            );
+          },
+          padding: EdgeInsets.zero,
+        ),
+        title: Text(_isEnglish ? "AASHA-TRIAGE" : 'AASHA-TRIAGE'),
         elevation: 0,
         centerTitle: true,
         backgroundColor: AppTheme.primaryTeal,
         actions: [
           Padding(
-            padding: const EdgeInsets.only(right: 12.0),
+            padding: const EdgeInsets.only(right: 8.0),
             child: GestureDetector(
               onTap: () => setState(() => _isEnglish = !_isEnglish),
               child: Container(
@@ -224,23 +236,43 @@ class _MainScreenState extends State<MainScreen> {
                     colors: [Colors.white.withOpacity(0.3), Colors.white.withOpacity(0.1)],
                   ),
                   borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
                 ),
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
                 child: Row(
                   children: [
+                    Icon(
+                      _isEnglish ? Icons.language : Icons.translate,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                    const SizedBox(width: 6),
                     Text(
-                      _isEnglish ? 'EN' : 'HI',
+                      _isEnglish ? 'EN' : 'हिन्दी',
                       style: const TextStyle(
-                        color: Colors.white,
                         fontWeight: FontWeight.bold,
-                        fontSize: 12,
+                        color: Colors.white,
+                        fontSize: 13,
                       ),
                     ),
-                    const SizedBox(width: 4),
-                    const Icon(Icons.language, color: Colors.white, size: 16),
                   ],
                 ),
               ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: IconButton(
+              icon: const Icon(Icons.person, color: Colors.white),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  SnackBar(
+                    content: Text(_isEnglish ? 'Profile' : 'प्रोफ़ाइल'),
+                    duration: const Duration(seconds: 1),
+                  ),
+                );
+              },
+              padding: EdgeInsets.zero,
             ),
           ),
         ],

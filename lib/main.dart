@@ -20,7 +20,7 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'AASHA Sathi',
+      title: 'AASHA-TRIAGE',
       theme: AppTheme.theme,
       home: const SplashScreen(),
       routes: {

@@ -77,11 +77,11 @@ class _IncentiveTrackerScreenState extends State<IncentiveTrackerScreen> {
       SnackBar(
         content: Text(
           _isEnglish
-              ? '🚨 SOS Activated! Location sent to emergency contact'
-              : '🚨 SOS सक्रिय! स्थान आपातकाल संपर्क को भेजा गया',
+              ? '🚨 SOS Activated!\n📍 Location shared with emergency contact\n📞 Calling emergency contact...'
+              : '🚨 SOS सक्रिय!\n📍 स्थान आपातकाल संपर्क को भेजा गया\n📞 आपातकाल संपर्क को कॉल कर रहे हैं...',
         ),
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 4),
       ),
     );
   }
@@ -147,9 +147,26 @@ Ensure all tasks are completed to maximize earnings.'''
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.home, color: Colors.white, size: 20),
+          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false),
+          padding: EdgeInsets.zero,
+        ),
         title: Text(_isEnglish ? 'Incentive Tracker' : 'प्रोत्साहन ट्रैकर'),
         elevation: 0,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.person, color: Colors.white),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(_isEnglish ? 'Profile' : 'प्रोफ़ाइल'),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            },
+            padding: EdgeInsets.zero,
+          ),
           IconButton(
             icon: Text(_isEnglish ? 'EN' : 'हिन्दी', style: const TextStyle(fontWeight: FontWeight.bold)),
             onPressed: () => setState(() => _isEnglish = !_isEnglish),

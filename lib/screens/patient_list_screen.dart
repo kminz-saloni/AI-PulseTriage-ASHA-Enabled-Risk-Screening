@@ -203,17 +203,9 @@ class _PatientListScreenState extends State<PatientListScreen> {
                     padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 12),
                     child: Row(
                       children: [
-                        // Back Button
-                        IconButton(
-                          onPressed: () => Navigator.of(context).pop(),
-                          icon: const Icon(Icons.arrow_back, color: Colors.white, size: 24),
-                          padding: EdgeInsets.zero,
-                          constraints: const BoxConstraints(),
-                        ),
-                        const SizedBox(width: 8),
                         // Home Button
                         IconButton(
-                          onPressed: () => Navigator.of(context).pushReplacementNamed('/home'),
+                          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false),
                           icon: const Icon(Icons.home, color: Colors.white, size: 24),
                           padding: EdgeInsets.zero,
                           constraints: const BoxConstraints(),
@@ -230,6 +222,21 @@ class _PatientListScreenState extends State<PatientListScreen> {
                             ),
                           ),
                         ),
+                        // Profile Icon Button
+                        IconButton(
+                          onPressed: () {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              SnackBar(
+                                content: Text(_isEnglish ? 'Profile' : 'प्रोफ़ाइल'),
+                                duration: const Duration(seconds: 1),
+                              ),
+                            );
+                          },
+                          icon: const Icon(Icons.person, color: Colors.white, size: 24),
+                          padding: EdgeInsets.zero,
+                          constraints: const BoxConstraints(),
+                        ),
+                        const SizedBox(width: 8),
                         // Language Toggle
                         Container(
                           decoration: BoxDecoration(

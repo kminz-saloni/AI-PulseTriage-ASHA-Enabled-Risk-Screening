@@ -1,18 +1,159 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../theme/app_theme.dart';
 import '../widgets/cards.dart';
 import '../widgets/buttons.dart';
 import '../widgets/input_components.dart';
 
-class AiRiskResultScreen extends StatelessWidget {
+class AiRiskResultScreen extends StatefulWidget {
   const AiRiskResultScreen({Key? key}) : super(key: key);
+
+  @override
+  State<AiRiskResultScreen> createState() => _AiRiskResultScreenState();
+}
+
+class _AiRiskResultScreenState extends State<AiRiskResultScreen> {
+  // SOS & Voice variables
+  Timer? _sosTimer;
+  bool _sosActive = false;
+  Offset _sosPosition = const Offset(0, 0);
+  Offset _voicePosition = const Offset(0, 0);
+
+  @override
+  void dispose() {
+    _sosTimer?.cancel();
+    super.dispose();
+  }
+
+  void _showSOSDialog() {
+    _sosTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted) {
+        _activateSOS();
+      }
+    });
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Emergency Alert',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+        ),
+        content: const Text(
+          'Are you in emergency?\nSOS will activate if you don\'t respond in 5 seconds.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              _sosTimer?.cancel();
+              Navigator.pop(context);
+              _sosActive = false;
+            },
+            child: const Text('No'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _sosTimer?.cancel();
+              Navigator.pop(context);
+              _activateSOS();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            child: const Text('Yes, Emergency!'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _activateSOS() {
+    if (_sosActive) return;
+    _sosActive = true;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          '🚨 SOS Activated!\n📍 Location shared with emergency contact\n📞 Calling emergency contact...',
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 4),
+      ),
+    );
+  }
+
+  void _openVoiceAssistant() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('🎤 Voice Assistant Activated'),
+        duration: Duration(seconds: 2),
+      ),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.home, color: Colors.white, size: 20),
+          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false),
+          padding: EdgeInsets.zero,
+        ),
         title: const Text('AI Risk Assessment'),
         elevation: 0,
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: GestureDetector(
+              onTap: () {},
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.white.withOpacity(0.3), Colors.white.withOpacity(0.1)],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: const Row(
+                  children: [
+                    Icon(
+                      Icons.language,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      'EN',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: IconButton(
+              icon: const Icon(Icons.person, color: Colors.white),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Profile'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+              padding: EdgeInsets.zero,
+            ),
+          ),
+        ],
       ),
       backgroundColor: AppTheme.bgLight,
       floatingActionButton: _buildFloatingButtons(),

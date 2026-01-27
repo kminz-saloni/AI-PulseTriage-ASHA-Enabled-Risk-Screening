@@ -77,11 +77,11 @@ class _HomeScreenState extends State<HomeScreen> {
       SnackBar(
         content: Text(
           _isEnglish
-              ? '🚨 SOS Activated! Location sent to emergency contact'
-              : '🚨 SOS सक्रिय! स्थान आपातकाल संपर्क को भेजा गया',
+              ? '🚨 SOS Activated!\n📍 Location shared with emergency contact\n📞 Calling emergency contact...'
+              : '🚨 SOS सक्रिय!\n📍 स्थान आपातकाल संपर्क को भेजा गया\n📞 आपातकाल संपर्क को कॉल कर रहे हैं...',
         ),
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 4),
       ),
     );
   }
@@ -185,7 +185,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           onPressed: _showProfileDialog,
         ),
-        title: Text(_isEnglish ? 'AASHA Sathi' : 'आशा साथी'),
+        title: Text(_isEnglish ? 'AASHA-TRIAGE' : 'आशा-ट्रायज'),
         elevation: 0,
         centerTitle: true,
         backgroundColor: AppTheme.primaryTeal,

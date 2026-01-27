@@ -176,11 +176,11 @@ class _TodaysTaskScreenState extends State<TodaysTaskScreen> {
       SnackBar(
         content: Text(
           _isEnglish
-              ? '🚨 SOS Activated! Location sent to emergency contact'
-              : '🚨 SOS सक्रिय! स्थान आपातकाल संपर्क को भेजा गया',
+              ? '🚨 SOS Activated!\n📍 Location shared with emergency contact\n📞 Calling emergency contact...'
+              : '🚨 SOS सक्रिय!\n📍 स्थान आपातकाल संपर्क को भेजा गया\n📞 आपातकाल संपर्क को कॉल कर रहे हैं...',
         ),
         backgroundColor: Colors.red,
-        duration: const Duration(seconds: 3),
+        duration: const Duration(seconds: 4),
       ),
     );
   }
@@ -256,26 +256,28 @@ class _TodaysTaskScreenState extends State<TodaysTaskScreen> {
     
     return Scaffold(
       appBar: AppBar(
-        leading: Row(
-          children: [
-            IconButton(
-              icon: const Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () => Navigator.of(context).pop(),
-              padding: EdgeInsets.zero,
-            ),
-            IconButton(
-              icon: const Icon(Icons.home, color: Colors.white, size: 20),
-              onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/home', (route) => false),
-              padding: EdgeInsets.zero,
-            ),
-          ],
+        leading: IconButton(
+          icon: const Icon(Icons.home, color: Colors.white, size: 20),
+          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false),
+          padding: EdgeInsets.zero,
         ),
-        leadingWidth: 100,
-        title: Text(_isEnglish ? "Today's Tasks" : 'आज के कार्य'),
+        title: Text(_isEnglish ? "AASHA-TRIAGE" : 'AASHA-TRIAGE'),
         elevation: 0,
         centerTitle: true,
         backgroundColor: AppTheme.primaryTeal,
         actions: [
+          IconButton(
+            icon: const Icon(Icons.person, color: Colors.white),
+            onPressed: () {
+              ScaffoldMessenger.of(context).showSnackBar(
+                SnackBar(
+                  content: Text(_isEnglish ? 'Profile' : 'प्रोफ़ाइल'),
+                  duration: const Duration(seconds: 1),
+                ),
+              );
+            },
+            padding: EdgeInsets.zero,
+          ),
           Padding(
             padding: const EdgeInsets.only(right: 12.0),
             child: GestureDetector(

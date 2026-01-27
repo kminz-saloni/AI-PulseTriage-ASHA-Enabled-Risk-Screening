@@ -67,7 +67,7 @@ class _SplashScreenState extends State<SplashScreen> with SingleTickerProviderSt
               
               // App name
               Text(
-                'AASHA Sathi',
+                'AASHA-TRIAGE',
                 style: Theme.of(context).textTheme.displayLarge?.copyWith(
                   color: Colors.white,
                   fontSize: 40,

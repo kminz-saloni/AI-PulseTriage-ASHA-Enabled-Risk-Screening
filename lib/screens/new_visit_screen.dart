@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'dart:async';
 import '../theme/app_theme.dart';
 import '../widgets/cards_buttons.dart';
 import '../models/models.dart';
@@ -20,6 +21,13 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
   String? diastolic;
   String? weight;
   String? temperature;
+  
+  // SOS & Voice variables
+  Timer? _sosTimer;
+  bool _sosActive = false;
+  Offset _sosPosition = const Offset(0, 0);
+  Offset _voicePosition = const Offset(0, 0);
+  
   final symptoms = <String, bool>{
     'Fever': false,
     'Cough': false,
@@ -38,6 +46,7 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
 
   @override
   void dispose() {
+    _sosTimer?.cancel();
     _nameController.dispose();
     _ageController.dispose();
     _systolicController.dispose();
@@ -45,6 +54,73 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
     _weightController.dispose();
     _temperatureController.dispose();
     super.dispose();
+  }
+
+  void _showSOSDialog() {
+    _sosTimer = Timer(const Duration(seconds: 5), () {
+      if (mounted) {
+        _activateSOS();
+      }
+    });
+
+    showDialog(
+      context: context,
+      barrierDismissible: false,
+      builder: (context) => AlertDialog(
+        title: const Text(
+          'Emergency Alert',
+          style: TextStyle(fontWeight: FontWeight.bold, color: Colors.red),
+        ),
+        content: const Text(
+          'Are you in emergency?\nSOS will activate if you don\'t respond in 5 seconds.',
+        ),
+        actions: [
+          TextButton(
+            onPressed: () {
+              _sosTimer?.cancel();
+              Navigator.pop(context);
+              _sosActive = false;
+            },
+            child: const Text('No'),
+          ),
+          ElevatedButton(
+            onPressed: () {
+              _sosTimer?.cancel();
+              Navigator.pop(context);
+              _activateSOS();
+            },
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.red,
+            ),
+            child: const Text('Yes, Emergency!'),
+          ),
+        ],
+      ),
+    );
+  }
+
+  void _activateSOS() {
+    if (_sosActive) return;
+    _sosActive = true;
+
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text(
+          '🚨 SOS Activated!\n📍 Location shared with emergency contact\n📞 Calling emergency contact...',
+        ),
+        backgroundColor: Colors.red,
+        duration: Duration(seconds: 4),
+      ),
+    );
+  }
+
+  void _openVoiceAssistant() {
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('🎤 Voice Assistant Activated'),
+        duration: Duration(seconds: 2),
+      ),
+    );
   }
 
   void _submitVisit() {
@@ -70,63 +146,199 @@ class _NewVisitScreenState extends State<NewVisitScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
+        leading: IconButton(
+          icon: const Icon(Icons.home, color: Colors.white, size: 20),
+          onPressed: () => Navigator.of(context).pushNamedAndRemoveUntil('/main', (route) => false),
+          padding: EdgeInsets.zero,
+        ),
         title: const Text('New Visit'),
+        actions: [
+          Padding(
+            padding: const EdgeInsets.only(right: 8.0),
+            child: GestureDetector(
+              onTap: () {},
+              child: Container(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(
+                    colors: [Colors.white.withOpacity(0.3), Colors.white.withOpacity(0.1)],
+                  ),
+                  borderRadius: BorderRadius.circular(20),
+                  border: Border.all(color: Colors.white.withOpacity(0.3), width: 1),
+                ),
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                child: const Row(
+                  children: [
+                    Icon(
+                      Icons.language,
+                      size: 18,
+                      color: Colors.white,
+                    ),
+                    SizedBox(width: 6),
+                    Text(
+                      'EN',
+                      style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.white,
+                        fontSize: 13,
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(right: 12.0),
+            child: IconButton(
+              icon: const Icon(Icons.person, color: Colors.white),
+              onPressed: () {
+                ScaffoldMessenger.of(context).showSnackBar(
+                  const SnackBar(
+                    content: Text('Profile'),
+                    duration: Duration(seconds: 1),
+                  ),
+                );
+              },
+              padding: EdgeInsets.zero,
+            ),
+          ),
+        ],
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
-              child: Row(
-                children: List.generate(4, (index) {
-                  return Expanded(
-                    child: Column(
-                      children: [
-                        Container(
-                          width: 36,
-                          height: 36,
-                          decoration: BoxDecoration(
-                            color: index <= currentStep ? AppTheme.primaryTeal : AppTheme.borderColor,
-                            borderRadius: BorderRadius.circular(18),
-                          ),
-                          child: Center(
-                            child: Text(
-                              '${index + 1}',
-                              style: TextStyle(
-                                color: index <= currentStep ? Colors.white : AppTheme.mediumText,
-                                fontWeight: FontWeight.bold,
+      body: Stack(
+        children: [
+          SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 12),
+                  child: Row(
+                    children: List.generate(4, (index) {
+                      return Expanded(
+                        child: Column(
+                          children: [
+                            Container(
+                              width: 36,
+                              height: 36,
+                              decoration: BoxDecoration(
+                                color: index <= currentStep ? AppTheme.primaryTeal : AppTheme.borderColor,
+                                borderRadius: BorderRadius.circular(18),
+                              ),
+                              child: Center(
+                                child: Text(
+                                  '${index + 1}',
+                                  style: TextStyle(
+                                    color: index <= currentStep ? Colors.white : AppTheme.mediumText,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
                               ),
                             ),
-                          ),
+                            const SizedBox(height: 4),
+                            if (index < 3)
+                              Expanded(
+                                child: Container(
+                                  width: 2,
+                                  color: index < currentStep ? AppTheme.primaryTeal : AppTheme.borderColor,
+                                ),
+                              ),
+                          ],
                         ),
-                        const SizedBox(height: 4),
-                        if (index < 3)
-                          Expanded(
-                            child: Container(
-                              width: 2,
-                              color: index < currentStep ? AppTheme.primaryTeal : AppTheme.borderColor,
-                            ),
-                          ),
-                      ],
-                    ),
+                      );
+                    }),
+                  ),
+                ),
+                Padding(
+                  padding: const EdgeInsets.all(16),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      if (currentStep == 0) _buildPatientDetailsStep(),
+                      if (currentStep == 1) _buildVitalsStep(),
+                      if (currentStep == 2) _buildSymptomsStep(),
+                      if (currentStep == 3) _buildReviewStep(),
+                    ],
+                  ),
+                ),
+              ],
+            ),
+          ),
+          // SOS Button
+          Positioned(
+            left: _sosPosition.dx,
+            bottom: _sosPosition.dy,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  _sosPosition = Offset(
+                    (_sosPosition.dx + details.delta.dx).clamp(0.0, MediaQuery.of(context).size.width - 60),
+                    (_sosPosition.dy - details.delta.dy).clamp(0.0, MediaQuery.of(context).size.height - 200),
                   );
-                }),
+                });
+              },
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: Colors.red,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.red.withOpacity(0.4),
+                      blurRadius: 8,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _showSOSDialog,
+                    customBorder: const CircleBorder(),
+                    child: const Icon(Icons.sos, color: Colors.white, size: 28),
+                  ),
+                ),
               ),
             ),
-            Padding(
-              padding: const EdgeInsets.all(16),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (currentStep == 0) _buildPatientDetailsStep(),
-                  if (currentStep == 1) _buildVitalsStep(),
-                  if (currentStep == 2) _buildSymptomsStep(),
-                  if (currentStep == 3) _buildReviewStep(),
-                ],
+          ),
+          // Voice Assistant Button
+          Positioned(
+            left: _voicePosition.dx,
+            bottom: _voicePosition.dy,
+            child: GestureDetector(
+              onPanUpdate: (details) {
+                setState(() {
+                  _voicePosition = Offset(
+                    (_voicePosition.dx + details.delta.dx).clamp(0.0, MediaQuery.of(context).size.width - 60),
+                    (_voicePosition.dy - details.delta.dy).clamp(0.0, MediaQuery.of(context).size.height - 200),
+                  );
+                });
+              },
+              child: Container(
+                width: 60,
+                height: 60,
+                decoration: BoxDecoration(
+                  color: AppTheme.accentTeal,
+                  shape: BoxShape.circle,
+                  boxShadow: [
+                    BoxShadow(
+                      color: AppTheme.accentTeal.withOpacity(0.4),
+                      blurRadius: 8,
+                      spreadRadius: 2,
+                    ),
+                  ],
+                ),
+                child: Material(
+                  color: Colors.transparent,
+                  child: InkWell(
+                    onTap: _openVoiceAssistant,
+                    customBorder: const CircleBorder(),
+                    child: const Icon(Icons.mic, color: Colors.white, size: 28),
+                  ),
+                ),
               ),
             ),
-          ],
-        ),
+          ),
+        ],
       ),
       bottomNavigationBar: Padding(
         padding: const EdgeInsets.all(16),

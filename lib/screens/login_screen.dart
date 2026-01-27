@@ -95,7 +95,7 @@ class _LoginScreenState extends State<LoginScreen> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        _isEnglish ? 'AASHA Sathi' : 'आशा साथी',
+                        _isEnglish ? 'AASHA-TRIAGE' : 'आशा-ट्रायज',
                         style: Theme.of(context).textTheme.headlineLarge,
                       ),
                       const SizedBox(height: AppTheme.xs),
