@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'dart:async';
 import '../theme/app_theme.dart';
 import '../widgets/common_app_bar.dart';
-import '../widgets/floating_action_buttons.dart';
 
 class IncentiveTrackerScreen extends StatefulWidget {
   const IncentiveTrackerScreen({Key? key}) : super(key: key);
@@ -92,12 +91,6 @@ Ensure all tasks are completed to maximize earnings.'''
                     _buildIncentiveCard('November Earnings', '₹2,300', 'Received', Colors.green),
                     _buildIncentiveCard('October Earnings', '₹2,650', 'Received', Colors.green),
                   ],
-                ),
-                
-                // Floating Action Buttons (SOS & Voice)
-                FloatingActionButtonsWidget(
-                  key: const ValueKey('incentive_screen_buttons'),
-                  isEnglish: _isEnglish,
                 ),
               ],
             ),

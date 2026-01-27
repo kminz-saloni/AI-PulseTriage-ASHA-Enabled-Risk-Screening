@@ -4,10 +4,18 @@ import '../theme/app_theme.dart';
 
 class FloatingActionButtonsWidget extends StatefulWidget {
   final bool isEnglish;
+  final Offset? initialSosPosition;
+  final Offset? initialVoicePosition;
+  final Function(Offset)? onSosPositionChanged;
+  final Function(Offset)? onVoicePositionChanged;
 
   const FloatingActionButtonsWidget({
     Key? key,
     required this.isEnglish,
+    this.initialSosPosition,
+    this.initialVoicePosition,
+    this.onSosPositionChanged,
+    this.onVoicePositionChanged,
   }) : super(key: key);
 
   @override
@@ -17,8 +25,28 @@ class FloatingActionButtonsWidget extends StatefulWidget {
 class _FloatingActionButtonsWidgetState extends State<FloatingActionButtonsWidget> {
   Timer? _sosTimer;
   bool _sosActive = false;
-  Offset _sosPosition = const Offset(16, 120); // Bottom-left initial position
-  Offset _voicePosition = const Offset(16, 200); // Bottom-right initial position (offset more to right)
+  late Offset _sosPosition;
+  late Offset _voicePosition;
+
+  @override
+  void initState() {
+    super.initState();
+    _sosPosition = widget.initialSosPosition ?? const Offset(16, 80);
+    _voicePosition = widget.initialVoicePosition ?? const Offset(16, 80);
+  }
+
+  @override
+  void didUpdateWidget(FloatingActionButtonsWidget oldWidget) {
+    super.didUpdateWidget(oldWidget);
+    // Update positions when switching tabs
+    if (oldWidget.initialSosPosition != widget.initialSosPosition ||
+        oldWidget.initialVoicePosition != widget.initialVoicePosition) {
+      setState(() {
+        _sosPosition = widget.initialSosPosition ?? const Offset(16, 80);
+        _voicePosition = widget.initialVoicePosition ?? const Offset(16, 80);
+      });
+    }
+  }
 
   @override
   void dispose() {
@@ -117,10 +145,11 @@ class _FloatingActionButtonsWidgetState extends State<FloatingActionButtonsWidge
             onPanUpdate: (details) {
               setState(() {
                 _sosPosition = Offset(
-                  (_sosPosition.dx + details.delta.dx).clamp(20.0, size.width - 80),
+                  (_sosPosition.dx + details.delta.dx).clamp(0.0, size.width - 80),
                   (_sosPosition.dy - details.delta.dy).clamp(20.0, size.height - 180),
                 );
               });
+              widget.onSosPositionChanged?.call(_sosPosition);
             },
             child: FloatingActionButton(
               onPressed: _showSOSDialog,
@@ -143,10 +172,11 @@ class _FloatingActionButtonsWidgetState extends State<FloatingActionButtonsWidge
             onPanUpdate: (details) {
               setState(() {
                 _voicePosition = Offset(
-                  (_voicePosition.dx - details.delta.dx).clamp(20.0, size.width - 80),
+                  (_voicePosition.dx - details.delta.dx).clamp(0.0, size.width - 80),
                   (_voicePosition.dy - details.delta.dy).clamp(20.0, size.height - 180),
                 );
               });
+              widget.onVoicePositionChanged?.call(_voicePosition);
             },
             child: FloatingActionButton(
               onPressed: _openVoiceAssistant,

@@ -18,6 +18,21 @@ class MainScreen extends StatefulWidget {
 class _MainScreenState extends State<MainScreen> {
   int _currentIndex = 0;
   bool _isEnglish = true;
+  
+  // Store positions per tab (tab index -> Map of button positions)
+  final Map<int, Map<String, Offset>> _tabButtonPositions = {
+    0: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Home
+    1: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Patients
+    2: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Referrals
+    3: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Tasks
+    4: {'sos': const Offset(16, 80), 'voice': const Offset(16, 80)}, // Incentives
+  };
+
+  void _updateButtonPosition(String buttonType, Offset newPosition) {
+    setState(() {
+      _tabButtonPositions[_currentIndex]![buttonType] = newPosition;
+    });
+  }
 
   @override
   void dispose() {
@@ -48,10 +63,14 @@ class _MainScreenState extends State<MainScreen> {
         children: [
           _buildCurrentScreen(),
           
-          // Floating Action Buttons (SOS & Voice)
+          // Floating Action Buttons (SOS & Voice) - Independent per tab
           FloatingActionButtonsWidget(
-            key: const ValueKey('main_screen_buttons'),
+            key: ValueKey('buttons_tab_$_currentIndex'),
             isEnglish: _isEnglish,
+            initialSosPosition: _tabButtonPositions[_currentIndex]!['sos']!,
+            initialVoicePosition: _tabButtonPositions[_currentIndex]!['voice']!,
+            onSosPositionChanged: (pos) => _updateButtonPosition('sos', pos),
+            onVoicePositionChanged: (pos) => _updateButtonPosition('voice', pos),
           ),
         ],
       ),

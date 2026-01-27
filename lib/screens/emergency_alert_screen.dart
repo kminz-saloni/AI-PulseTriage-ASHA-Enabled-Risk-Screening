@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common_app_bar.dart';
-import '../widgets/floating_action_buttons.dart';
 
 class EmergencyAlertScreen extends StatefulWidget {
   const EmergencyAlertScreen({Key? key}) : super(key: key);
@@ -288,12 +287,6 @@ class _EmergencyAlertScreenState extends State<EmergencyAlertScreen> {
                       ),
               ),
             ],
-          ),
-          
-          // Floating Action Buttons (SOS & Voice)
-          FloatingActionButtonsWidget(
-            key: const ValueKey('emergency_screen_buttons'),
-            isEnglish: _isEnglish,
           ),
         ],
       ),

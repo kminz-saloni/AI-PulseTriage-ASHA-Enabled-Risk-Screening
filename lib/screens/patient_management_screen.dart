@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../theme/app_theme.dart';
 import '../widgets/common_app_bar.dart';
-import '../widgets/floating_action_buttons.dart';
 
 // Patient Model
 class PatientInfo {
@@ -271,12 +270,6 @@ class _PatientManagementScreenState extends State<PatientManagementScreen> {
                       ),
               ),
             ],
-          ),
-
-          // Floating Action Buttons (SOS & Voice)
-          FloatingActionButtonsWidget(
-            key: const ValueKey('patient_mgmt_buttons'),
-            isEnglish: _isEnglish,
           ),
           
           // Floating Add Button
