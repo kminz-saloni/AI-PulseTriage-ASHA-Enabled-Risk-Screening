@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "618998045480",
+    "project_id": "asha-triage",
+    "storage_bucket": "asha-triage.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:618998045480:android:1ef44c5c32a1127e82ce1d",
+        "android_client_info": {
+          "package_name": "com.example.ai_pulse_triage"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBAHH_qerhIZf7QJFGDYT5aTLSwNJRWAAY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
